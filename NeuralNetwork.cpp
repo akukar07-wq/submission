@@ -445,15 +445,15 @@ double NeuralNetwork::assess(string filename) {
     DataLoader dl(filename);
     return assess(dl);
 }
-
 double NeuralNetwork::assess(DataLoader dl) {
     bool stateBefore = evaluating;
     evaluating = true;
     double count(0);
     double correct(0);
     vector<double> output;
-    for (int i = 0; i < (int)dl.getData().size(); i++) {
-        DataInstance di = dl.getData().at(i);
+    vector<DataInstance> data = dl.getData();
+    for (int i = 0; i < (int)data.size(); i++) {
+        DataInstance di = data.at(i);
         output = predict(di);
         if (static_cast<int>(round(output.at(0))) == di.y) {
             correct++;
@@ -461,13 +461,14 @@ double NeuralNetwork::assess(DataLoader dl) {
         count++;
     }
 
-    if (dl.getData().empty()) {
+    if (data.empty()) {
         cerr << "Cannot assess accuracy on an empty dataset" << endl;
         exit(1);
     }
     evaluating = stateBefore;
     return correct / count;
 }
+```
 
 
 void NeuralNetwork::saveModel(string filename) {
