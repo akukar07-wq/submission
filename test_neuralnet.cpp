@@ -112,9 +112,9 @@ void test_accuracy() {
     nn.train();
 
     for (int i = 0; i < numEpochs; i++) {
-        for (int j = 0; j < dl.getData().size(); j++) {
-            DataInstance di = dl.getData().at(j);
-            output = nn.predict(di);
+        const vector<DataInstance>& data = dl.getData();
+        for (size_t j = 0; j < data.size(); j++) {
+            output = nn.predict(data.at(j));
         }
         nn.update();
     }
