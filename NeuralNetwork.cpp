@@ -108,21 +108,24 @@ vector<double> NeuralNetwork::predict(DataInstance instance) {
 // STUDENT TODO: IMPLEMENT
 bool NeuralNetwork::contribute(double y, double p) {
     contributions.clear();
-    for (auto node : inputNodeIds) {
+    for (auto node : outputNodeIds) {
         contribute(node, y, p);
     }
     return true;
 }
 // STUDENT TODO: IMPLEMENT
 double NeuralNetwork::contribute(int nodeId, const double& y, const double& p) {
-    if (contributions.count(nodeId) > 0) {   // ← check FIRST
+    if (contributions.count(nodeId) > 0) {
         return contributions[nodeId];
     }
+
     visitContributeStart(nodeId);
     double incomingContribution = 0;
     double outgoingContribution = 0;
+
     if (adjacencyList.at(nodeId).empty()) {
         outgoingContribution = -1 * ((y - p) / (p * (1 - p)));
+        visitContributeNode(nodeId, outgoingContribution);
     } else {
         for (auto& pair : adjacencyList[nodeId]) {
             Connection& conn = pair.second;
@@ -134,10 +137,6 @@ double NeuralNetwork::contribute(int nodeId, const double& y, const double& p) {
             visitContributeNode(nodeId, outgoingContribution);
         }
     }
-
-    contributions[nodeId] = outgoingContribution;
-    return outgoingContribution;
-}
 
     contributions[nodeId] = outgoingContribution;
     return outgoingContribution;
