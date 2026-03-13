@@ -45,7 +45,10 @@ vector<int> NeuralNetwork::getOutputNodeIds() const {
 
 // STUDENT TODO: IMPLEMENT
 vector<double> NeuralNetwork::predict(DataInstance instance) {
-    flush();
+    for (int i = 0; i < size; i++) {
+        nodes[i]->preActivationValue = 0;
+        nodes[i]->postActivationValue = 0;
+    }
     vector<double> input = instance.x;
 
     if (input.size() != inputNodeIds.size()) {
@@ -60,15 +63,6 @@ vector<double> NeuralNetwork::predict(DataInstance instance) {
         nodes[nodeId]->preActivationValue = input[i];
         nodes[nodeId]->postActivationValue = input[i];
     }
-
-    vector<int> inDegree(size, 0);
-    for (int i = 0; i < size; i++) {
-        for (auto& pair : adjacencyList[i]) {
-            inDegree[pair.first]++;
-        }
-    }
-
-    vector<int> processedPreds(size, 0);
 
     queue<int> q;
     vector<bool> visited(size, false);
@@ -90,8 +84,7 @@ vector<double> NeuralNetwork::predict(DataInstance instance) {
             int neighborId = pair.first;
             Connection& conn = pair.second;
             visitPredictNeighbor(conn);
-            processedPreds[neighborId]++;
-            if (processedPreds[neighborId] == inDegree[neighborId] && !visited[neighborId]) {
+            if (!visited[neighborId]) {
                 visited[neighborId] = true;
                 q.push(neighborId);
             }
