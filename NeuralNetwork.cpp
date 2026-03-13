@@ -108,8 +108,8 @@ vector<double> NeuralNetwork::predict(DataInstance instance) {
 // STUDENT TODO: IMPLEMENT
 bool NeuralNetwork::contribute(double y, double p) {
     contributions.clear();
-    for (auto node : outputNodeIds) {
-        contribute(node, y, p);
+    for (int i = 0; i < size; i++) {
+        contribute(i, y, p);
     }
     return true;
 }
