@@ -115,14 +115,12 @@ bool NeuralNetwork::contribute(double y, double p) {
 }
 // STUDENT TODO: IMPLEMENT
 double NeuralNetwork::contribute(int nodeId, const double& y, const double& p) {
+    if (contributions.count(nodeId) > 0) {   // ← check FIRST
+        return contributions[nodeId];
+    }
     visitContributeStart(nodeId);
     double incomingContribution = 0;
     double outgoingContribution = 0;
-
-    if (contributions.count(nodeId) > 0) {
-        return contributions[nodeId];
-    }
-
     if (adjacencyList.at(nodeId).empty()) {
         outgoingContribution = -1 * ((y - p) / (p * (1 - p)));
     } else {
@@ -136,6 +134,10 @@ double NeuralNetwork::contribute(int nodeId, const double& y, const double& p) {
             visitContributeNode(nodeId, outgoingContribution);
         }
     }
+
+    contributions[nodeId] = outgoingContribution;
+    return outgoingContribution;
+}
 
     contributions[nodeId] = outgoingContribution;
     return outgoingContribution;
